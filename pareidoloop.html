@@ -1,5 +1,6 @@
 <html>
 	<head>
+		<title>pareidoloop</title>
 		<script type="text/javascript" src="ccv.js"></script>
 		<script type="text/javascript" src="face.js"></script>
 		<script type="text/javascript" src="pareidoloop.js"></script>
@@ -106,18 +107,18 @@
 		<h2>pareidoloop</h2>
 		<div id="controls">
 			<div class="input">
-				<input id="input-canvas-size" type="text" value="50"/>
-				<span class="label">canvas size</span><span class="tip">(smaller is faster)</span>
+				<input id="input-image-size" type="text" value="200"/>
+				<span class="label">output size</span><span class="tip">(to render finished faces)</span>
 				<div class="clear"></div>
 			</div>
 			<div class="input">
-				<input id="input-target-fitness" type="text" value="30.0"/>
-				<span class="label">fitness target</span><span class="tip">(lower is faster)</span>
+				<input id="input-target-fitness" type="text" value="25.0"/>
+				<span class="label">target fitness</span><span class="tip">(lower is faster, max 35)</span>
 				<div class="clear"></div>
 			</div>
 			<div class="input">
 				<input id="input-max-gens" type="text" value="6000"/>
-				<span class="label">max generations</span><span class="tip">(limit if target not reached)</span>
+				<span class="label">max generations</span><span class="tip">(cut-off if target not reached)</span>
 				<div class="clear"></div>
 			</div>
 			<div class="input">
@@ -148,7 +149,7 @@
 		<div id="output"></div>
 		<script type="text/javascript">
 
-			var inputCanvasSize = document.getElementById("input-canvas-size");
+			var inputImageSize = document.getElementById("input-image-size");
 			var inputTargetFitness = document.getElementById("input-target-fitness");
 			var inputMaxGens = document.getElementById("input-max-gens");
 			var running = false;
@@ -164,16 +165,16 @@
 
 					var go = true;
 
-					var canvasSize = parseInt(inputCanvasSize.value);
-					if (isNaN(canvasSize) || canvasSize < 15) {
-						inputCanvasSize.style.borderColor = "#f00";
+					var imageSize = parseInt(inputImageSize.value);
+					if (isNaN(imageSize) || imageSize < 1) {
+						inputImageSize.style.borderColor = "#f00";
 						go = false;
 					} else {
-						inputCanvasSize.style.borderColor = "#000";
+						inputImageSize.style.borderColor = "#000";
 					}
 
 					var targetFitness = parseFloat(inputTargetFitness.value);
-					if (isNaN(targetFitness) || targetFitness <= 0) {
+					if (isNaN(targetFitness) || targetFitness <= 0 || targetFitness > 35) {
 						inputTargetFitness.style.borderColor = "#f00";
 						go = false;
 					} else {
@@ -189,12 +190,12 @@
 					}
 
 					if (go) {
-						Pareidoloop.start({canvasSize: canvasSize, confidenceThreshold: targetFitness, maxGenerations: maxGens});
+						Pareidoloop.start({outputSize: imageSize, confidenceThreshold: targetFitness, maxGenerations: maxGens});
 						inputButton.innerHTML = "cease";
 						running = true;
 					}
 				}
 			}
-</script>
+		</script>
 	</body>
 </html>
