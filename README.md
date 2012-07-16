@@ -17,7 +17,6 @@ notes
 =====
 * try out a [demo]
 * currently tested only in chrome (v. 21)
-* slows dramatically with larger canvas sizes (todo: give a scaled version to the ccv algo)
 * probably a bunch of bugs in there
 
 [demo]: http://iobound.com/pareidoloop/
