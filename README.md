@@ -11,8 +11,7 @@ idea via roger alsing's [evolution of mona lisa], and greg borenstein's [machine
 
 [liuliu]: https://github.com/liuliu/ccv
 [evolution of mona lisa]: http://rogeralsing.com/2008/12/07/genetic-programming-evolution-of-mona-lisa/
-[cvdazzle]: http://cvdazzle.com/
-[machine pareidolia]: http://www.flickr.com/photos/unavoidablegrain/sets/72157628855014523/
+[machine pareidolia]: http://urbanhonking.com/ideasfordozens/2012/01/14/machine-pareidolia-hello-little-fella-meets-facetracker/
 
 notes
 =====
