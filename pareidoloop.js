@@ -4,20 +4,21 @@ var Pareidoloop = new function() {
     var genCount;
     var lastImprovedGen;
     var faceA, faceB;
-    var canvasA, canvasB, scoreA, scoreB, output;
+    var canvasA, canvasB, canvasOut, scoreA, scoreB, output;
     var interval;
 
-	var settings = {
+    var settings = {
        CANVAS_SIZE : 50,
+       OUTPUT_SIZE : 100,
        INITIAL_POLYS : 60,
-	   MAX_POLYS : 1000,
-	   MAX_GENERATIONS : 6000,
-	   MAX_GENS_WITHOUT_IMPROVEMENT : 1000,
+       MAX_POLYS : 1000,
+       MAX_GENERATIONS : 6000,
+       MAX_GENS_WITHOUT_IMPROVEMENT : 1000,
        CONFIDENCE_THRESHOLD : 30,
        QUAD_ADD_STDDEV : 0.5,
        QUAD_INIT_STDDEV : 0.2,
        BG_COLOR : "#1E1E1E"
-	};
+    };
 
     this.stop = function() {
         if (interval) {
@@ -29,8 +30,8 @@ var Pareidoloop = new function() {
     this.start = function(args) {
         
         if (args) {
-            if (args.canvasSize) {
-                settings.CANVAS_SIZE = args.canvasSize;
+            if (args.outputSize) {
+                settings.OUTPUT_SIZE = args.outputSize;
             }
             if (args.confidenceThreshold) {
                 settings.CONFIDENCE_THRESHOLD = args.confidenceThreshold;
@@ -46,16 +47,21 @@ var Pareidoloop = new function() {
         scoreB = document.getElementById("scoreB");
         output = document.getElementById("output");
 
+        canvasOut = document.createElement("canvas");
+
         reset();
         interval = setInterval(tick,10);
     }
 
     var reset = function() {
 
-        initCanvas(canvasA);
+        initCanvas(canvasA, settings.CANVAS_SIZE);
         clearCanvas(canvasA);
-        initCanvas(canvasB);
+        initCanvas(canvasB, settings.CANVAS_SIZE);
         clearCanvas(canvasB);
+        initCanvas(canvasOut, settings.OUTPUT_SIZE);
+        clearCanvas(canvasOut);
+
         scoreA.innerHTML = "Waiting for initial detection ... patience";
         scoreB.innerHTML = "";
 
@@ -69,15 +75,15 @@ var Pareidoloop = new function() {
     var rnd = function(mean, stdev) {
         
         // pinched from http://www.protonfish.com/random.shtml
-		return ((Math.random()*2-1)+(Math.random()*2-1)+(Math.random()*2-1))*stdev+mean;
-	};
+        return ((Math.random()*2-1)+(Math.random()*2-1)+(Math.random()*2-1))*stdev+mean;
+    };
 
-    var initCanvas = function(canvas) {
+    var initCanvas = function(canvas, size) {
 
-        canvas.width = canvas.height = settings.CANVAS_SIZE;
+        canvas.width = canvas.height = size;
         
         // set origin at center
-        canvas.getContext("2d").setTransform(1, 0, 0, 1, settings.CANVAS_SIZE/2, settings.CANVAS_SIZE/2);
+        canvas.getContext("2d").setTransform(1, 0, 0, 1, size/2, size/2);
     }
 
     var clearCanvas = function(canvas) {
@@ -85,7 +91,7 @@ var Pareidoloop = new function() {
         var ctx = canvas.getContext("2d");
         ctx.fillStyle = settings.BG_COLOR;
         ctx.globalAlpha = 1;
-        ctx.fillRect(-settings.CANVAS_SIZE/2,-settings.CANVAS_SIZE/2,settings.CANVAS_SIZE,settings.CANVAS_SIZE);
+        ctx.fillRect(-canvas.width/2,-canvas.height/2,canvas.width,canvas.height);
     }
 
     var getSeedFace = function() {
@@ -116,9 +122,11 @@ var Pareidoloop = new function() {
             genCount++;
         }
 
+        // render new generation
         clearCanvas(canvasB);
         faceB.draw(canvasB.getContext("2d"));
 
+        // test fitness of new generation
         var fitness = faceB.measureFitness(canvasB);
 
         var fitnessScore = -999;
@@ -136,10 +144,12 @@ var Pareidoloop = new function() {
             fitnessScore = fitness.confidence;
             message = message + "fitness: " + String(fitnessScore).substr(0,10);
         }
-
         scoreB.innerHTML = message;
 
         if (fitnessScore > faceA.fitness) {
+
+            // new generation replaces previous fittest
+            
             seeding = false;
 
             clearCanvas(canvasA);
@@ -155,13 +165,19 @@ var Pareidoloop = new function() {
                 (genCount - lastImprovedGen) > settings.MAX_GENS_WITHOUT_IMPROVEMENT || 
                 fitnessScore > settings.CONFIDENCE_THRESHOLD) {
 
-            faceA.draw(canvasB.getContext("2d"));
-            var dataUrl = canvasB.toDataURL();
+            // render finished face out as an image
+            
+            var outCtx = canvasOut.getContext("2d");
+            var outScale = settings.OUTPUT_SIZE/settings.CANVAS_SIZE;
+            outCtx.scale(outScale, outScale);
+            faceA.draw(outCtx);
+            var dataUrl = canvasOut.toDataURL();
             
             var outputImg = document.createElement("img");
             output.appendChild(outputImg);
             outputImg.src =  dataUrl;
 
+            // go again
             reset();
         }
     }
