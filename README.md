@@ -20,4 +20,4 @@ notes
 * slows dramatically with larger canvas sizes (todo: give a scaled version to the ccv algo)
 * probably a bunch of bugs in there
 
-[demo]: http://iobound.com/pareidolia/
+[demo]: http://iobound.com/pareidoloop/
