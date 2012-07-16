@@ -16,7 +16,8 @@ idea via roger alsing's [evolution of mona lisa], and greg borenstein's [machine
 notes
 =====
 * try out a [demo]
-* currently tested only in chrome (v. 21)
+* currently tested only in chrome (v 21)
+* hard-crashes firefox for some reason
 * probably a bunch of bugs in there
 
 [demo]: http://iobound.com/pareidoloop/
