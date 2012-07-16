@@ -1,4 +1,4 @@
-var Pareidolia = new function() {
+var Pareidoloop = new function() {
 
     var seeding;
     var genCount;
