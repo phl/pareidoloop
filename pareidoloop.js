@@ -111,6 +111,10 @@ var Pareidoloop = new function() {
 
     var tick = function() {
 
+        if (!ticking) {
+            return;
+        }
+
         if (seeding) {
             // spam random polys until ccv gets a false positive
             faceB = getSeedFace();
@@ -179,9 +183,7 @@ var Pareidoloop = new function() {
             reset();
         }
 
-        if (ticking) {
-                setTimeout(tick,1);
-        }
+        setTimeout(tick,1);
     }
 
 
