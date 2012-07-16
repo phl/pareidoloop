@@ -1,27 +1,3 @@
-<html>
-	<head>
-		<title>pareidoloop</title>
-		<script type="text/javascript" src="ccv.js"></script>
-		<script type="text/javascript" src="face.js"></script>
-		<script type="text/javascript" src="pareidoloop.js"></script>
-		<style type="text/css">
-
-			body {
-				padding: 24px;
-				font-family: helvetica;
-			}
-
-			div.gen {
-				padding: 0 0 8px 0;
-				margin-bottom: 8px;
-			}
-
-			.score {
-				font-size: 10px;
-			}
-
-			div#output {
-				padding: 0;
 			}
 
 			div#canvases {
@@ -107,12 +83,12 @@
 		<h2>pareidoloop</h2>
 		<div id="controls">
 			<div class="input">
-				<input id="input-image-size" type="text" value="100"/>
+				<input id="input-image-size" type="text" value="75"/>
 				<span class="label">output size</span><span class="tip">(to render finished faces)</span>
 				<div class="clear"></div>
 			</div>
 			<div class="input">
-				<input id="input-target-fitness" type="text" value="25.0"/>
+				<input id="input-target-fitness" type="text" value="27.5"/>
 				<span class="label">target fitness</span><span class="tip">(lower is faster, max 35)</span>
 				<div class="clear"></div>
 			</div>
@@ -147,6 +123,7 @@
 		</div>
 		<div class="hr"></div>
 		<div id="output"></div>
+		<span class="tip">(<a href="https://github.com/phl/pareidoloop/blob/master/README.md">about</a>)
 		<script type="text/javascript">
 
 			var inputImageSize = document.getElementById("input-image-size");
