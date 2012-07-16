@@ -1,0 +1,200 @@
+<html>
+	<head>
+		<script type="text/javascript" src="ccv.js"></script>
+		<script type="text/javascript" src="face.js"></script>
+		<script type="text/javascript" src="pareidolia.js"></script>
+		<style type="text/css">
+
+			body {
+				padding: 24px;
+				font-family: helvetica;
+			}
+
+			div.gen {
+				padding: 0 0 8px 0;
+				margin-bottom: 8px;
+			}
+
+			.score {
+				font-size: 10px;
+			}
+
+			div#output {
+				padding: 0;
+			}
+
+			div#canvases {
+				padding: 0;
+			}
+
+			#output img {
+				margin : 0 4px 4px 0;
+			}
+
+			canvas {
+				float: left;
+				margin: 0 6px 0 0;
+				padding: 0;
+				background-color: #000;
+			}
+
+			.clear {
+				clear: both;
+				margin: 0;
+				padding: 0;
+			}
+
+			div.hr {
+				border-top: 1px solid #ccc;
+				margin-top: 8px;
+				margin-bottom: 8px;
+				padding: 4px;
+			}
+
+			div.input {
+				padding: 4px 0px 4px 0px;
+			}
+
+			div.input span {
+				padding-left: 6px;
+			}
+
+			.label {
+				font-weight: bold;
+				font-size: 18px;
+			}
+
+			.tip {
+				font-size: 10px;
+			}
+
+			input {
+				width: 40px;
+				font-size: 10px;
+				float: left;
+				border: 1px solid #000;
+				padding: 4px;
+			}
+
+			h3 {
+				margin-top: 0;
+				margin-bottom: 12px;
+				font-size: 18px;
+			}
+
+			h2 {
+				font-size: 36px;
+			}
+
+			button {
+				width: 100px;
+				background: #000;
+				color: #fff;
+				font-weight: bold;
+				border-color: #000;
+				padding: 8px;
+				margin-left: 0px;
+			}
+
+			button:active {
+				border-color: #fff #fff #fff #fff;
+			}
+
+		</style>
+	</head>
+	<body>
+		<h2>pareidolia</h2>
+		<div id="controls">
+			<div class="input">
+				<input id="input-canvas-size" type="text" value="50"/>
+				<span class="label">canvas size</span><span class="tip">(smaller is faster)</span>
+				<div class="clear"></div>
+			</div>
+			<div class="input">
+				<input id="input-target-fitness" type="text" value="30.0"/>
+				<span class="label">fitness target</span><span class="tip">(lower is faster)</span>
+				<div class="clear"></div>
+			</div>
+			<div class="input">
+				<input id="input-max-gens" type="text" value="6000"/>
+				<span class="label">max generations</span><span class="tip">(limit if target not reached)</span>
+				<div class="clear"></div>
+			</div>
+			<div class="input">
+				<button id="input-button" type="button">commence</button>
+				<div class="clear"></div>
+			</div>
+		</div>
+		<div class="hr"></div>
+		<div id="canvases">
+			<div class="gen">
+				<canvas id="canvasB" width="50" height="50"></canvas>
+				<div>
+					<h3>current generation</h3>
+					<span id="scoreB" class="score"></span>
+				</div>
+				<div class="clear"></div>
+			</div>
+			<div class="gen">
+				<canvas id="canvasA" width="50" height="50"></canvas>
+				<div>
+					<h3>fittest generation</h3>
+					<span id="scoreA" class="score"></span>
+				</div>
+				<div class="clear"></div>
+			</div>
+		</div>
+		<div class="hr"></div>
+		<div id="output"></div>
+		<script type="text/javascript">
+
+			var inputCanvasSize = document.getElementById("input-canvas-size");
+			var inputTargetFitness = document.getElementById("input-target-fitness");
+			var inputMaxGens = document.getElementById("input-max-gens");
+			var running = false;
+
+			var inputButton = document.getElementById("input-button");
+			inputButton.onclick = function() {
+
+				if (running) {
+					Pareidolia.stop();
+					running = false;
+					inputButton.innerHTML = "commence";
+				} else {
+
+					var go = true;
+
+					var canvasSize = parseInt(inputCanvasSize.value);
+					if (isNaN(canvasSize) || canvasSize < 15) {
+						inputCanvasSize.style.borderColor = "#f00";
+						go = false;
+					} else {
+						inputCanvasSize.style.borderColor = "#000";
+					}
+
+					var targetFitness = parseFloat(inputTargetFitness.value);
+					if (isNaN(targetFitness) || targetFitness <= 0) {
+						inputTargetFitness.style.borderColor = "#f00";
+						go = false;
+					} else {
+						inputTargetFitness.style.borderColor = "#000";
+					}
+
+					var maxGens = parseInt(inputMaxGens.value);
+					if (isNaN(maxGens) || maxGens <= 0) {
+						inputMaxGens.style.borderColor = "#f00";
+						go = false;
+					} else {
+						inputMaxGens.style.borderColor = "#000";
+					}
+
+					if (go) {
+						Pareidolia.start({canvasSize: canvasSize, confidenceThreshold: targetFitness, maxGenerations: maxGens});
+						inputButton.innerHTML = "cease";
+						running = true;
+					}
+				}
+			}
+</script>
+	</body>
+</html>
