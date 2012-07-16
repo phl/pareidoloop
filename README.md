@@ -17,7 +17,8 @@ notes
 =====
 * try out a [demo]
 * currently tested only in chrome (v 21)
-* hard-crashes firefox for some reason
+* hangs firefox for some reason (on win xp anyway)
 * probably a bunch of bugs in there
+* have patience - let it churn away for a few hours and see what you get
 
 [demo]: http://iobound.com/pareidoloop/
