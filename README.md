@@ -1,5 +1,5 @@
-pareidolia
-==========
+pareidoloop
+===========
 
 1. generate random polygons
 2. feed them into a face detector
@@ -7,10 +7,12 @@ pareidolia
 
 difficult stuff (the cv lib) by [liuliu]
 
-inspired by roger alsing's [evolution of mona lisa]
+idea via roger alsing's [evolution of mona lisa], and greg borenstein's [machine pareidolia]
 
 [liuliu]: https://github.com/liuliu/ccv
 [evolution of mona lisa]: http://rogeralsing.com/2008/12/07/genetic-programming-evolution-of-mona-lisa/
+[cvdazzle]: http://cvdazzle.com/
+[machine pareidolia]: http://www.flickr.com/photos/unavoidablegrain/sets/72157628855014523/
 
 notes
 =====
