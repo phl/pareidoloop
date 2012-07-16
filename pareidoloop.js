@@ -1,11 +1,11 @@
 var Pareidoloop = new function() {
 
     var seeding;
+    var ticking;
     var genCount;
     var lastImprovedGen;
     var faceA, faceB;
     var canvasA, canvasB, canvasOut, scoreA, scoreB, output;
-    var interval;
 
     var settings = {
        CANVAS_SIZE : 50,
@@ -21,10 +21,7 @@ var Pareidoloop = new function() {
     };
 
     this.stop = function() {
-        if (interval) {
-            clearInterval(interval);
-            interval = null;
-        }
+            ticking = false;
     }
 
     this.start = function(args) {
@@ -50,7 +47,8 @@ var Pareidoloop = new function() {
         canvasOut = document.createElement("canvas");
 
         reset();
-        interval = setInterval(tick,10);
+        ticking = true;
+        tick();
     }
 
     var reset = function() {
@@ -179,6 +177,10 @@ var Pareidoloop = new function() {
 
             // go again
             reset();
+        }
+
+        if (ticking) {
+                setTimeout(tick,1);
         }
     }
 
