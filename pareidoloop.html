@@ -233,13 +233,13 @@
 					function getDefaultFilename(img) {
 						var hash = 0;
 						var str = img.src;
-						if (!str || str.length == 0) return hash;
+						if (!str || str.length == 0) return "face";
 						for (i = 0; i < str.length; i++) {
 							char = str.charCodeAt(i);
 							hash = ((hash<<5)-hash)+char;
 							hash = (hash & hash) >>> 0;
 						}
-						return hash.toString(36);
+						return "face-" + hash.toString(36);
 					}
 
 		</script>
