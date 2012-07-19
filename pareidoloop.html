@@ -239,7 +239,7 @@
 							hash = ((hash<<5)-hash)+char;
 							hash = (hash & hash) >>> 0;
 						}
-						return "face-" + hash.toString(36) + ".png";
+						return "face-" + img.width + "x" + img.height + "-" + hash.toString(36) + ".png";
 					}
 
 		</script>
