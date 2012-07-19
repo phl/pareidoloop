@@ -218,7 +218,7 @@
 							downloader.removeChild(downloader.children[downloader.children.length - 1]);
 						}
 
-						for (var i in images) {
+						for (var i = 0 ; i < images.length ; i++) {
 							var anchor = document.createElement('a');
 							anchor.href = images[i].src;
 							anchor.download = getDefaultFilename(images[i]); 
@@ -239,7 +239,7 @@
 							hash = ((hash<<5)-hash)+char;
 							hash = (hash & hash) >>> 0;
 						}
-						return "face-" + hash.toString(36);
+						return "face-" + hash.toString(36) + ".png";
 					}
 
 		</script>
