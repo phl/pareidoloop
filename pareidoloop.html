@@ -221,6 +221,7 @@
 						for (var i = 0 ; i < images.length ; i++) {
 							var anchor = document.createElement('a');
 							anchor.href = images[i].src;
+							anchor.target = "_blank";
 							anchor.download = getDefaultFilename(images[i]); 
 							downloader.appendChild(anchor);
 							console.log(anchor);
