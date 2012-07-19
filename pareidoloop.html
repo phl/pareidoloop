@@ -61,7 +61,7 @@
 			}
 
 			.label {
-				font-weight: 100;
+				font-weight: bold;
 				font-size: 18px;
 			}
 
@@ -81,12 +81,10 @@
 				margin-top: 0;
 				margin-bottom: 12px;
 				font-size: 18px;
-				font-weight: 100;
 			}
 
 			h2 {
 				font-size: 36px;
-				font-weight: 100;
 			}
 
 			button {
@@ -149,7 +147,8 @@
 		</div>
 		<div class="hr"></div>
 		<div id="output"></div>
-		<span class="tip">(<a href="https://github.com/phl/pareidoloop/blob/master/README.md">about</a>)
+		<span class="tip">(<a href="https://github.com/phl/pareidoloop/blob/master/README.md">about</a> | 
+			<a id="save-anchor" href="#">save images</a>)</span>
 		<script type="text/javascript">
 
 			var inputImageSize = document.getElementById("input-image-size");
@@ -199,6 +198,48 @@
 					}
 				}
 			}
+
+
+			var saveAnchor = document.getElementById("save-anchor");
+
+			saveAnchor.onclick = function () {
+						var images = document.images;
+						var downloader = document.getElementById('downloader');
+						if (!downloader) {
+							downloader = document.createElement('div');
+							downloader.id = 'downloader';
+							downloader.style.display = 'none';
+						}
+						document.body.appendChild(downloader);
+
+						while (downloader.children.length > 0) {
+							downloader.removeChild(downloader.children[downloader.children.length - 1]);
+						}
+
+						for (var i in images) {
+							var anchor = document.createElement('a');
+							anchor.href = images[i].src;
+							anchor.download = getDefaultFilename(images[i]); 
+							downloader.appendChild(anchor);
+							console.log(anchor);
+							anchor.click();
+						}
+
+						document.body.removeChild(downloader);
+					}
+
+					function getDefaultFilename(img) {
+						var hash = 0;
+						var str = img.src;
+						if (!str || str.length == 0) return hash;
+						for (i = 0; i < str.length; i++) {
+							char = str.charCodeAt(i);
+							hash = ((hash<<5)-hash)+char;
+							hash = (hash & hash) >>> 0;
+						}
+						return hash.toString(36);
+					}
+
 		</script>
 	</body>
 </html>
