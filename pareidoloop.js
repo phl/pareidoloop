@@ -197,6 +197,17 @@ var Pareidoloop = new function() {
             [rnd(-0.5,stdDev),rnd(0.5,stdDev)]
         ];
 
+        // Make a random color
+        clip = function(x, min, max) {
+            return Math.min(max, Math.max(min, x));
+        };
+
+        red = Math.round(clip(rnd(186, 40), 0, 255));
+        green = Math.round(clip(rnd(108, 40), 0, 255));
+        blue = Math.round(clip(rnd(73, 20), 0, 255));
+
+        this.color = "#" + red.toString(16) + green.toString(16) + blue.toString(16);
+        
         this.draw = function(ctx) {
             
                    ctx.save();
@@ -211,7 +222,7 @@ var Pareidoloop = new function() {
                    ctx.closePath();
 
                    if (alpha > 0) {
-                       ctx.fillStyle = "#ffffff";
+                       ctx.fillStyle = this.color;
                        ctx.globalAlpha = alpha;
                    } else {
                        ctx.fillStyle = "#000000";
