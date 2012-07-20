@@ -5,7 +5,8 @@ var Pareidoloop = new function() {
     var genCount;
     var lastImprovedGen;
     var faceA, faceB;
-    var canvasA, canvasB, canvasOut, scoreA, scoreB, output;
+    var canvasA, canvasB, canvasOut, scoreA, scoreB;
+    var outputCallback;
 
     var settings = {
        CANVAS_SIZE : 50,
@@ -30,6 +31,9 @@ var Pareidoloop = new function() {
             if (args.outputSize) {
                 settings.OUTPUT_SIZE = args.outputSize;
             }
+        if (args.outputCallback) {
+		outputCallback = args.outputCallback;
+	    }
             if (args.confidenceThreshold) {
                 settings.CONFIDENCE_THRESHOLD = args.confidenceThreshold;
             }
@@ -42,7 +46,6 @@ var Pareidoloop = new function() {
         scoreA = document.getElementById("scoreA");
         canvasB = document.getElementById("canvasB");
         scoreB = document.getElementById("scoreB");
-        output = document.getElementById("output");
 
         canvasOut = document.createElement("canvas");
 
@@ -176,8 +179,11 @@ var Pareidoloop = new function() {
             var dataUrl = canvasOut.toDataURL();
             
             var outputImg = document.createElement("img");
-            output.appendChild(outputImg);
-            outputImg.src =  dataUrl;
+            outputImg.src = dataUrl;
+
+	    if (outputCallback) {
+		    outputCallback(outputImg);
+	    }
 
             // go again
             reset();
@@ -211,10 +217,10 @@ var Pareidoloop = new function() {
                    ctx.closePath();
 
                    if (alpha > 0) {
-                       ctx.fillStyle = "#ffffff";
+		       ctx.fillStyle = "#ffffff";
                        ctx.globalAlpha = alpha;
                    } else {
-                       ctx.fillStyle = "#000000";
+		       ctx.fillStyle = "#000000";
                        ctx.globalAlpha = -alpha;
                    }
 
