@@ -206,7 +206,7 @@ var Pareidoloop = new function() {
         };
 
         red = Math.round(clip(rnd(186, 40), 0, 255));
-        green = Math.round(clip(rnd(108, 40), 0, 255));
+        green = Math.round(clip(rnd(108, 20), 0, 255));
         blue = Math.round(clip(rnd(73, 20), 0, 255));
 
         this.color = "#" + red.toString(16) + green.toString(16) + blue.toString(16);
