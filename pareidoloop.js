@@ -30,6 +30,9 @@ var Pareidoloop = new function() {
             if (args.outputSize) {
                 settings.OUTPUT_SIZE = args.outputSize;
             }
+            if (args.workingSize) {
+                settings.CANVAS_SIZE = args.workingSize
+            }
             if (args.confidenceThreshold) {
                 settings.CONFIDENCE_THRESHOLD = args.confidenceThreshold;
             }
@@ -269,6 +272,10 @@ var Pareidoloop = new function() {
                             ];
 
                        var newScale =  35 > this.fitness ? Math.sqrt(Math.abs(35-this.fitness)) : 1;
+                       
+                       // scale by detected area.
+                       newScale *= this.bounds.width / 25;
+
                        var newAlpha = rnd(0, 0.45);
                        newAlpha = newAlpha > 1.0 ? 1.0 : newAlpha < -1.0 ? -1.0 : newAlpha;
                        childQuads[childQuads.length] = new Quad(

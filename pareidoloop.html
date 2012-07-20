@@ -114,6 +114,11 @@
 				<div class="clear"></div>
 			</div>
 			<div class="input">
+				<input id="working-image-size" type="text" value="50"/>
+				<span class="label">working size</span><span class="tip">(size of canvas during processing)</span>
+				<div class="clear"></div>
+			</div>
+			<div class="input">
 				<input id="input-target-fitness" type="text" value="27.5"/>
 				<span class="label">target fitness</span><span class="tip">(lower is faster, max 35)</span>
 				<div class="clear"></div>
@@ -154,6 +159,7 @@
 		<script type="text/javascript">
 
 			var inputImageSize = document.getElementById("input-image-size");
+			var workImageSize = document.getElementById("working-image-size");
 			var inputTargetFitness = document.getElementById("input-target-fitness");
 			var inputMaxGens = document.getElementById("input-max-gens");
 			var running = false;
@@ -177,6 +183,15 @@
 						inputImageSize.style.borderColor = "#000";
 					}
 
+					var workSize = parseInt(workImageSize.value);
+					if (isNaN(workSize) || workSize < 1) {
+						workImageSize.style.borderColor = "#f00";
+						go = false;
+					} else {
+						workImageSize.style.borderColor = "#000";
+					}
+
+
 					var targetFitness = parseFloat(inputTargetFitness.value);
 					if (isNaN(targetFitness) || targetFitness <= 0 || targetFitness > 35) {
 						inputTargetFitness.style.borderColor = "#f00";
@@ -194,7 +209,7 @@
 					}
 
 					if (go) {
-						Pareidoloop.start({outputSize: imageSize, confidenceThreshold: targetFitness, maxGenerations: maxGens});
+						Pareidoloop.start({outputSize: imageSize, confidenceThreshold: targetFitness, maxGenerations: maxGens, workingSize:workSize});
 						inputButton.innerHTML = "cease";
 						running = true;
 					}
