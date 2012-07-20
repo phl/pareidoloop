@@ -93,7 +93,7 @@ var Pareidoloop = new function() {
         ctx.fillStyle = settings.BG_COLOR;
         ctx.globalAlpha = 1;
         ctx.fillRect(-canvas.width/2,-canvas.height/2,canvas.width,canvas.height);
-    }
+    };
 
     var getSeedFace = function() {
 
@@ -110,7 +110,34 @@ var Pareidoloop = new function() {
             }
 
             return new Face(quads);
-    }
+    };
+
+    var shouldMove = function(newScore, oldScore) {
+        // if the new state is better, move to it no matter what.
+        if(newScore > oldScore)
+            return true;
+        
+        // never accept a score that is not a face.
+        if(newScore <= 0)
+            return false;
+
+        // otherwise, use a simulated annealing "temperature" to determine
+        // whether or not to move.
+        
+        // if it's the same, 50/50
+        if(newScore == oldScore)
+            return Math.random() < .5;
+
+        // the temperature ranges from 0.01 to 1.  The closer we are to 
+        // the target, the lower the temperature.
+        var temperature = Math.max(0.01, 1 - (oldScore / 35));
+
+        // The probability we'll move is determined by the difference between
+        // the old and new scores, and the current temperature.
+        var probability = Math.exp((newScore - oldScore) / temperature * 5);
+
+        return Math.random() < probability;
+    };
 
     var tick = function() {
 
@@ -151,7 +178,7 @@ var Pareidoloop = new function() {
         }
         scoreB.innerHTML = message;
 
-        if (fitnessScore > faceA.fitness) {
+        if (shouldMove(fitnessScore, faceA.fitness)) {
 
             // new generation replaces previous fittest
             
