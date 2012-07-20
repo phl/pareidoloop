@@ -18,7 +18,7 @@ notes
 * try out a [demo]
 * currently tested only in chrome (v 21)
 * hangs firefox in some cases, on some OSes
-* "save images" only works in chrome (uses a@download attribute)
+* "autosave images" only works in chrome (uses a@download attribute)
 * large output sizes result in corrupt images (data:// URLs too long?)
 * probably a bunch of other bugs in there
 * have patience - let it churn away for a few hours and see what you get
