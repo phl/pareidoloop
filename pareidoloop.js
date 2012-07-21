@@ -136,7 +136,6 @@ var Pareidoloop = new function() {
         // the old and new scores, and the current temperature.
         var probability = Math.exp((newScore - oldScore) / temperature * 5);
 
-        console.log((newScore-oldScore)+" "+probability);
         return Math.random() < probability;
     };
 
