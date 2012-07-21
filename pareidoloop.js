@@ -31,7 +31,7 @@ var Pareidoloop = new function() {
             if (args.outputSize) {
                 settings.OUTPUT_SIZE = args.outputSize;
             }
-        if (args.outputCallback) {
+            if (args.outputCallback) {
 		outputCallback = args.outputCallback;
 	    }
             if (args.confidenceThreshold) {
@@ -93,7 +93,7 @@ var Pareidoloop = new function() {
         ctx.fillStyle = settings.BG_COLOR;
         ctx.globalAlpha = 1;
         ctx.fillRect(-canvas.width/2,-canvas.height/2,canvas.width,canvas.height);
-    }
+    };
 
     var getSeedFace = function() {
 
@@ -110,7 +110,35 @@ var Pareidoloop = new function() {
             }
 
             return new Face(quads);
-    }
+    };
+
+    var shouldMove = function(newScore, oldScore) {
+        // if the new state is better, move to it no matter what.
+        if(newScore > oldScore)
+            return true;
+        
+        // never accept a score that is not a face.
+        if(newScore <= -999)
+            return false;
+
+        // otherwise, use a simulated annealing "temperature" to determine
+        // whether or not to move.
+        
+        // if it's the same, 50/50
+        if(newScore == oldScore)
+            return Math.random() < .5;
+
+        // the temperature ranges from 0.01 to 1.  The closer we are to 
+        // the target, the lower the temperature.
+        var temperature = Math.max(0.01, 1 - (oldScore / settings.CONFIDENCE_THRESHOLD));
+
+        // The probability we'll move is determined by the difference between
+        // the old and new scores, and the current temperature.
+        var probability = Math.exp((newScore - oldScore) / temperature * 5);
+
+        console.log((newScore-oldScore)+" "+probability);
+        return Math.random() < probability;
+    };
 
     var tick = function() {
 
@@ -151,7 +179,7 @@ var Pareidoloop = new function() {
         }
         scoreB.innerHTML = message;
 
-        if (fitnessScore > faceA.fitness) {
+        if (shouldMove(fitnessScore, faceA.fitness)) {
 
             // new generation replaces previous fittest
             
@@ -203,6 +231,11 @@ var Pareidoloop = new function() {
             [rnd(-0.5,stdDev),rnd(0.5,stdDev)]
         ];
 
+        // Make a random color
+        var clip = function(x, min, max) {
+            return Math.min(max, Math.max(min, x));
+        };
+        
         this.draw = function(ctx) {
             
                    ctx.save();
@@ -264,6 +297,10 @@ var Pareidoloop = new function() {
                             ];
 
                        var newScale =  35 > this.fitness ? Math.sqrt(Math.abs(35-this.fitness)) : 1;
+                       
+                       // scale by detected area.
+                       newScale *= this.bounds.width / 25;
+
                        var newAlpha = rnd(0, 0.45);
                        newAlpha = newAlpha > 1.0 ? 1.0 : newAlpha < -1.0 ? -1.0 : newAlpha;
                        childQuads[childQuads.length] = new Quad(
