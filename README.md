@@ -22,5 +22,7 @@ notes
 * large output sizes result in corrupt images (data:// URLs too long?)
 * probably a bunch of other bugs in there
 * have patience - let it churn away for a few hours and see what you get
+* annealing simulation from [russellmcc]
 
 [demo]: http://iobound.com/pareidoloop/
+[russellmcc]: https://github.com/russellmcc/pareidoloop
