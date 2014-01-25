@@ -1,0 +1,281 @@
+<html>
+	<head>
+		<title>pareidoloop</title>
+		<script type="text/javascript" src="ccv.js"></script>
+		<script type="text/javascript" src="face.js"></script>
+		<script type="text/javascript" src="pareidoloop-mikhail.js"></script>
+		<style type="text/css">
+
+			body {
+				padding: 24px;
+				font-family: helvetica;
+			}
+
+			div.gen {
+				padding: 0 0 8px 0;
+				margin-bottom: 8px;
+			}
+
+			.score {
+				font-size: 10px;
+			}
+
+			div#output {
+				padding: 0;
+			}
+
+			div#canvases {
+				padding: 0;
+			}
+
+			#output img {
+				margin : 0 4px 4px 0;
+			}
+
+			canvas {
+				float: left;
+				margin: 0 6px 0 0;
+				padding: 0;
+				background-color: #000;
+			}
+
+			.clear {
+				clear: both;
+				margin: 0;
+				padding: 0;
+			}
+
+			div.hr {
+				border-top: 1px solid #ccc;
+				margin-top: 8px;
+				margin-bottom: 8px;
+				padding: 4px;
+			}
+
+			div.input {
+				padding: 4px 0px 4px 0px;
+			}
+
+			div.input span {
+				padding-left: 6px;
+			}
+
+			.label {
+				font-weight: 100;
+				font-size: 18px;
+			}
+
+			.tip {
+				font-size: 10px;
+			}
+
+			#controls input {
+				width: 40px;
+				font-size: 10px;
+				float: left;
+				border: 1px solid #000;
+				padding: 4px;
+			}
+
+			h3 {
+				font-weight: 100;
+				margin-top: 0;
+				margin-bottom: 12px;
+				font-size: 18px;
+			}
+
+			h2 {
+				font-weight: 100;
+				font-size: 36px;
+			}
+
+			button {
+				width: 100px;
+				background: #000;
+				color: #fff;
+				font-weight: 100;
+				border-color: #000;
+				padding: 8px;
+				margin-left: 0px;
+			}
+
+			button:active {
+				border-color: #fff #fff #fff #fff;
+			}
+
+			input[type=checkbox] {
+				display: none;
+			}
+
+			input[type=checkbox]:checked + label span.y {
+				display: inline;
+			}
+
+			input[type=checkbox]:checked + label span.n {
+				display: none;
+			}
+
+			input[type=checkbox] + label span.n {
+				display: inline;
+			}
+
+			input[type=checkbox] + label span.y {
+				display: none;
+			}
+
+			label span.u {
+				text-decoration: underline;
+			}
+
+			a {
+				color: black;
+			}
+
+		</style>
+	</head>
+	<body>
+		<h2>pareidoloop</h2>
+		<div id="controls">
+			<div class="input">
+				<input id="input-image-size" type="text" value="50"/>
+				<span class="label">output size</span><span class="tip">(to render finished faces)</span>
+				<div class="clear"></div>
+			</div>
+			<div class="input">
+				<input id="input-target-fitness" type="text" value="27.5"/>
+				<span class="label">target fitness</span><span class="tip">(lower is faster, max 35)</span>
+				<div class="clear"></div>
+			</div>
+			<div class="input">
+				<input id="input-max-gens" type="text" value="6000"/>
+				<span class="label">max generations</span><span class="tip">(cut-off if target not reached)</span>
+				<div class="clear"></div>
+			</div>
+			<div class="input">
+				<button id="input-button" type="button">commence</button>
+				<div class="clear"></div>
+			</div>
+		</div>
+		<div class="hr"></div>
+		<div id="canvases">
+			<div class="gen">
+				<canvas id="canvasB" width="50" height="50"></canvas>
+				<div>
+					<h3>current generation</h3>
+					<span id="scoreB" class="score"></span>
+				</div>
+				<div class="clear"></div>
+			</div>
+			<div class="gen">
+				<canvas id="canvasA" width="50" height="50"></canvas>
+				<div>
+					<h3>fittest generation</h3>
+					<span id="scoreA" class="score"></span>
+				</div>
+				<div class="clear"></div>
+			</div>
+		</div>
+		<div class="hr"></div>
+		<div id="output"></div>
+		<script type="text/javascript">
+
+			var inputImageSize = document.getElementById("input-image-size");
+			var inputTargetFitness = document.getElementById("input-target-fitness");
+			var inputMaxGens = document.getElementById("input-max-gens");
+			var running = false;
+
+			var inputButton = document.getElementById("input-button");
+			
+
+			var output = document.getElementById("output");
+
+
+			inputButton.onclick = function() {
+
+				if (running) {
+					Pareidoloop.stop();
+					running = false;
+					inputButton.innerHTML = "commence";
+				} else {
+
+					var go = true;
+
+					var imageSize = parseInt(inputImageSize.value);
+					if (isNaN(imageSize) || imageSize < 1) {
+						inputImageSize.style.borderColor = "#f00";
+						go = false;
+					} else {
+						inputImageSize.style.borderColor = "#000";
+					}
+
+					var targetFitness = parseFloat(inputTargetFitness.value);
+					if (isNaN(targetFitness) || targetFitness <= 0 || targetFitness > 35) {
+						inputTargetFitness.style.borderColor = "#f00";
+						go = false;
+					} else {
+						inputTargetFitness.style.borderColor = "#000";
+					}
+
+					var maxGens = parseInt(inputMaxGens.value);
+					if (isNaN(maxGens) || maxGens <= 0) {
+						inputMaxGens.style.borderColor = "#f00";
+						go = false;
+					} else {
+						inputMaxGens.style.borderColor = "#000";
+					}
+
+					if (go) {
+						Pareidoloop.start({outputCallback: renderImage, outputSize: imageSize, confidenceThreshold: targetFitness, maxGenerations: maxGens});
+						inputButton.innerHTML = "cease";
+						running = true;
+					}
+				}
+			}
+
+
+			function renderImage(image, frame) {
+
+				output.appendChild(image);
+
+				var downloader = document.getElementById('downloader');
+				if (!downloader) {
+					downloader = document.createElement('div');
+					downloader.id = 'downloader';
+					downloader.style.display = 'none';
+				}
+				document.body.appendChild(downloader);
+
+				while (downloader.children.length > 0) {
+					downloader.removeChild(downloader.children[downloader.children.length - 1]);
+				}
+
+				var anchor = document.createElement('a');
+				anchor.href = image.src;
+				anchor.target = "_blank";
+				anchor.download = getDefaultFilename(image,frame); 
+				downloader.appendChild(anchor);
+				anchor.click();
+
+				document.body.removeChild(downloader);
+				output.removeChild(image);
+			}
+
+			var hash = 0;
+			function getDefaultFilename(img, frame) {
+				if (frame == 1) {
+					var str = img.src;
+					if (!str || str.length == 0) return "face";
+					for (i = 0; i < str.length; i++) {
+						char = str.charCodeAt(i);
+						hash = ((hash<<5)-hash)+char;
+						hash = (hash & hash) >>> 0;
+					}
+				}
+
+				var seq = ("0000" + frame).slice(-4);
+				return "face-" + hash.toString(36) + "-" + seq + ".png";
+			}
+
+		</script>
+	</body>
+</html>
