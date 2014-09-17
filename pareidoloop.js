@@ -32,8 +32,8 @@ var Pareidoloop = new function() {
                 settings.OUTPUT_SIZE = args.outputSize;
             }
             if (args.outputCallback) {
-		outputCallback = args.outputCallback;
-	    }
+                outputCallback = args.outputCallback;
+            }
             if (args.confidenceThreshold) {
                 settings.CONFIDENCE_THRESHOLD = args.confidenceThreshold;
             }
@@ -207,6 +207,13 @@ var Pareidoloop = new function() {
             
             var outputImg = document.createElement("img");
             outputImg.src = dataUrl;
+
+            var title = "Fitness: " + fitnessScore.toPrecision(4) + 
+                        "/" + settings.CONFIDENCE_THRESHOLD.toPrecision(4) + 
+                        " @ Generation: " + genCount + 
+                        "/" + settings.MAX_GENERATIONS;
+
+            outputImg.title = title;
 
 	    if (outputCallback) {
 		    outputCallback(outputImg);
