@@ -11,6 +11,7 @@ var Pareidoloop = new function() {
     var settings = {
        CANVAS_SIZE : 50,
        OUTPUT_SIZE : 100,
+       OUTPUT_FORMAT : "png",
        INITIAL_POLYS : 60,
        MAX_POLYS : 1000,
        MAX_GENERATIONS : 6000,
@@ -40,6 +41,9 @@ var Pareidoloop = new function() {
             if (args.maxGenerations) {
                 settings.MAX_GENERATIONS = args.maxGenerations;
             }
+            if (args.outputFormat) {
+                settings.OUTPUT_FORMAT = args.outputFormat;
+            }
         }
 
         canvasA = document.getElementById("canvasA");
@@ -52,6 +56,11 @@ var Pareidoloop = new function() {
         reset();
         ticking = true;
         tick();
+    }
+
+    this.setOutputFormat = function(outputFormat) {
+
+        settings.OUTPUT_FORMAT = outputFormat == "svg" ? "svg" : "png";
     }
 
     var reset = function() {
@@ -198,15 +207,12 @@ var Pareidoloop = new function() {
                 fitnessScore > settings.CONFIDENCE_THRESHOLD) {
 
             // render finished face out as an image
-            
-            var outCtx = canvasOut.getContext("2d");
-            var outScale = settings.OUTPUT_SIZE/settings.CANVAS_SIZE;
-            outCtx.scale(outScale, outScale);
+            var outCtx = initOutputCtx();
+
             faceA.draw(outCtx);
-            var dataUrl = canvasOut.toDataURL();
             
             var outputImg = document.createElement("img");
-            outputImg.src = dataUrl;
+            outputImg.src = getDataUrl(outCtx);
 
             var title = "Fitness: " + fitnessScore.toPrecision(4) + 
                         "/" + settings.CONFIDENCE_THRESHOLD.toPrecision(4) + 
@@ -215,15 +221,40 @@ var Pareidoloop = new function() {
 
             outputImg.title = title;
 
-	    if (outputCallback) {
-		    outputCallback(outputImg);
-	    }
+            if (outputCallback) {
+                outputCallback(outputImg);
+            }
 
             // go again
             reset();
         }
 
         setTimeout(tick,1);
+    }
+
+    var getDataUrl = function(outCtx) {
+
+        if ("svg" == settings.OUTPUT_FORMAT) {
+            return "data:image/svg+xml;utf8," + outCtx.getSerializedSvg();
+        } else {
+            return canvasOut.toDataURL();
+        }
+    }
+
+    var initOutputCtx = function() {
+        
+        var outCtx;
+        if ("svg" == settings.OUTPUT_FORMAT) {
+            outCtx = new C2S(settings.OUTPUT_SIZE, settings.OUTPUT_SIZE);
+            outCtx.fillStyle = "#000000";
+            outCtx.fillRect(0,0,settings.OUTPUT_SIZE,settings.OUTPUT_SIZE);
+            outCtx.translate(settings.OUTPUT_SIZE/2,settings.OUTPUT_SIZE/2);
+        } else {
+            outCtx = canvasOut.getContext("2d");
+        }
+        var outScale = settings.OUTPUT_SIZE/settings.CANVAS_SIZE;
+        outCtx.scale(outScale, outScale);
+        return outCtx;
     }
 
 

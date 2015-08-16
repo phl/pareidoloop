@@ -3,6 +3,7 @@
 		<title>pareidoloop</title>
 		<script type="text/javascript" src="ccv.js"></script>
 		<script type="text/javascript" src="face.js"></script>
+		<script type="text/javascript" src="canvas2svg.js"></script>
 		<script type="text/javascript" src="pareidoloop.js"></script>
 		<style type="text/css">
 
@@ -178,6 +179,7 @@
 		<div class="hr"></div>
 		<div id="output"></div>
 		<span class="tip"><a href="https://github.com/phl/pareidoloop/blob/master/README.md">about</a> | 
+			<input id="svg-checkbox" type="checkbox"/><label for="svg-checkbox"><span class="u">output:</span>&nbsp;<span class="y">svg</span><span class="n">png</span></label> |
 			<input id="save-checkbox" type="checkbox"/><label for="save-checkbox"><span class="u">autosave images:</span>&nbsp;<span class="y">yes (chrome only)</span><span class="n">no</span></label></span>
 		<script type="text/javascript">
 
@@ -188,6 +190,7 @@
 
 			var inputButton = document.getElementById("input-button");
 			
+			var svgCheckbox = document.getElementById("svg-checkbox");
 			var saveCheckbox = document.getElementById("save-checkbox");
 
 			var output = document.getElementById("output");
@@ -227,13 +230,20 @@
 						inputMaxGens.style.borderColor = "#000";
 					}
 
+                    var outputFormat = svgCheckbox.checked ? "svg" : "png";
+
 					if (go) {
-						Pareidoloop.start({outputCallback: renderImage, outputSize: imageSize, confidenceThreshold: targetFitness, maxGenerations: maxGens});
+						Pareidoloop.start({outputCallback: renderImage, outputSize: imageSize, outputFormat: outputFormat, confidenceThreshold: targetFitness, maxGenerations: maxGens});
 						inputButton.innerHTML = "cease";
 						running = true;
 					}
 				}
 			}
+
+            svgCheckbox.onchange = function() {
+
+                Pareidoloop.setOutputFormat(svgCheckbox.checked ? "svg" : "png");
+            }
 
 
 			function renderImage(image) {
@@ -273,7 +283,7 @@
 					hash = ((hash<<5)-hash)+char;
 					hash = (hash & hash) >>> 0;
 				}
-				return "face-" + img.width + "x" + img.height + "-" + hash.toString(36) + ".png";
+				return "face-" + img.width + "x" + img.height + "-" + hash.toString(36) + (svgCheckbox.checked ? ".svg" : ".png");
 			}
 
 		</script>
